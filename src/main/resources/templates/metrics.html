@@ -1,0 +1,59 @@
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">节点名称</th>
+            <th scope="col">CPU</th>
+            <th scope="col">内存</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="node:${nodeMetrics}">
+            <td th:text="${node.name}"/>
+            <td th:text="${node.cpu}"/>
+            <td th:text="${node.memory}"/>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-striped table-bordered">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">容器名称</th>
+            <th scope="col">就绪</th>
+            <th scope="col">所在节点</th>
+            <th scope="col">阶段</th>
+            <th scope="col">容器状态</th>
+            <th scope="col">重启次数</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="pod:${podMetrics}">
+            <td th:text="${pod.name}"/>
+            <td th:text="${pod.ready}"/>
+            <td th:text="${pod.address}"/>
+            <td th:text="${pod.phase}"/>
+            <td th:text="${pod.started}"/>
+            <td th:text="${pod.restartCount}"/>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h6 class="font-weight-bold" style="padding: .75rem">相关资料</h6>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item" style="padding: .75rem">
+            <a href="https://raw.githubusercontent.com/kubernetes-client/java/master/kubernetes/docs/CoreV1Api.md"
+               class="text-reset" target="_blank">
+                https://raw.githubusercontent.com/kubernetes-client/java/master/kubernetes/docs/CoreV1Api.md
+            </a>
+        </li>
+        <li class="list-group-item" style="padding: .75rem">
+            <a href="https://github.com/kubernetes-client/java/"
+               class="text-reset" target="_blank">
+                https://github.com/kubernetes-client/java/
+            </a>
+        </li>
+    </ul>
+</div>
