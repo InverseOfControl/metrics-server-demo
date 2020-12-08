@@ -6,8 +6,8 @@ echo "jenkins dir : ${WORKSPACE}"
 echo "version : ${VERSION}"
 echo "module name : ${MODULE_NAME}"
 
-cd "${JENKINS_DIR}"/target
-JAR_PACKAGE_NAME=ls | grep '.*\.jar$'
+cd "${WORKSPACE}"/target
+JAR_PACKAGE_NAME=$(ls | grep '.*\.jar$')
 echo "jar_package_name : ${JAR_PACKAGE_NAME}"
 
 cat <<EOF > Dockerfile
