@@ -37,6 +37,6 @@ cp metrics-server-demo-deploy-template.yaml metrics-server-demo-deploy.yaml
 sed -i "s/{{VERSION}}/${VERSION}/g" metrics-server-demo-deploy.yaml
 sed -i "s/{{MODULE_NAME}}/${MODULE_NAME}/g" metrics-server-demo-deploy.yaml
 
-"echo $(cat cache-demo-deployment.yaml)"
+"echo $(cat metrics-server-demo-deploy.yaml)"
 
 kubectl apply -f metrics-server-demo-deploy.yaml
