@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{MODULE_NAME}}
+  labels:
+    app: {{MODULE_NAME}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{MODULE_NAME}}
+  template:
+    metadata:
+      labels:
+        app: {{MODULE_NAME}}
+    spec:
+      containers:
+        - name: {{MODULE_NAME}}
+          image: registry.cn-hangzhou.aliyuncs.com/ghx-docker-repo/{{MODULE_NAME}}:{{VERSION}}
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{MODULE_NAME}}-service
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: {{MODULE_NAME}}
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{MODULE_NAME}}-ingress
+spec:
+  rules:
+    - host: metrics.server.demo.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{MODULE_NAME}}-service
+              servicePort: 80
