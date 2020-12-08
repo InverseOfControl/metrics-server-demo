@@ -6,11 +6,10 @@ echo "jenkins dir : ${WORKSPACE}"
 echo "version : ${VERSION}"
 echo "module name : ${MODULE_NAME}"
 
-cd "${WORKSPACE}"/target
-JAR_PACKAGE_NAME=$(ls | grep '.*\.jar$')
+JAR_PACKAGE_NAME=$(ls "${WORKSPACE}"/target | grep '.*\.jar$')
 echo "jar_package_name : ${JAR_PACKAGE_NAME}"
 
-cat <<EOF > Dockerfile
+cat <<EOF > "${WORKSPACE}"/target/Dockerfile
 FROM openjdk:8-jre-alpine
 COPY ${WORKSPACE}/target/${JAR_PACKAGE_NAME} /${MODULE_NAME}.jar
 ENTRYPOINT ["java","-jar","/${MODULE_NAME}.jar"]
