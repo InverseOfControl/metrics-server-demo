@@ -1,26 +1,29 @@
 #!/bin/bash
 
 VERSION=$(date "+%Y%m%d%H%M%S")
-JENKINS_DIR=${WORKSPACE}/${MODULE_NAME}
 
-echo "jenkins dir : ${JENKINS_DIR}"
+echo "jenkins dir : ${WORKSPACE}"
 echo "version : ${VERSION}"
 echo "module name : ${MODULE_NAME}"
+
+cd "${JENKINS_DIR}"/target
+JAR_PACKAGE_NAME=$(ls | grep '.*\.jar$')
+echo "jar_package_name : ${JAR_PACKAGE_NAME}"
+
+cat <<EOF > Dockerfile
+FROM openjdk:8-jre-alpine
+COPY ${WORKSPACE}/target/${JAR_PACKAGE_NAME} /${MODULE_NAME}.jar
+ENTRYPOINT ["java","-jar","/${MODULE_NAME}.jar"]
+EOF
+
+echo "Dockerfile created success"
+
+docker build -t "${MODULE_NAME}":"${VERSION}" .
 
 if [ 1 == 1 ];then
     echo "退出"
     exit 1
 fi
-
-cat <<EOF > Dockerfile
-FROM openjdk:8-jre-alpine
-COPY ${JENKINS_DIR}/target/demo-cache-ssh-0.0.1-SNAPSHOT.jar /${MODULE_NAME}.jar
-ENTRYPOINT ["java","-jar","/cache-demo.jar"]
-EOF
-
-echo "Dockerfile created success"
-
-docker build -t cache-demo:${version} .
 
 echo "image build success"
 rm -rf Dockerfile
