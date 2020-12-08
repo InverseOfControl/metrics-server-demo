@@ -18,7 +18,6 @@ EOF
 
 echo "Dockerfile created success"
 
-
 docker build -t "${MODULE_NAME}":"${VERSION}" .
 
 if [ 1 == 1 ];then
