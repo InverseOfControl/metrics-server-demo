@@ -32,6 +32,7 @@ docker rmi -f registry.cn-hangzhou.aliyuncs.com/ghx-docker-repo/"${MODULE_NAME}"
 echo "image push success"
 
 cd "${WORKSPACE}"/target/classes/k8s
+chmod +x metrics-server-demo-deploy-template.yaml
 cp metrics-server-demo-deploy-template.yaml metrics-server-demo-deploy.yaml
 sed -i "s/{{VERSION}}/${VERSION}/g" metrics-server-demo-deploy.yaml
 sed -i "s/{{MODULE_NAME}}/${MODULE_NAME}/g" metrics-server-demo-deploy.yaml
