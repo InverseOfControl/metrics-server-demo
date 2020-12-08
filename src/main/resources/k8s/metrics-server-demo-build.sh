@@ -39,4 +39,5 @@ sed -i "s/{{MODULE_NAME}}/${MODULE_NAME}/g" metrics-server-demo-deploy.yaml
 
 "echo $(cat metrics-server-demo-deploy.yaml)"
 
+"echo 开始部署到k8s中..."
 kubectl apply -f metrics-server-demo-deploy.yaml
