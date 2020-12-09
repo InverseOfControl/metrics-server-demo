@@ -1,26 +1,17 @@
 package com.example.metrics.web;
 
-import com.example.metrics.MetricsUtils;
+import com.example.metrics.utils.MetricsUtils;
 import io.kubernetes.client.Metrics;
 import io.kubernetes.client.custom.NodeMetricsList;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
-import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1NodeList;
 import io.kubernetes.client.openapi.models.V1PodList;
-import io.kubernetes.client.util.ClientBuilder;
-import io.kubernetes.client.util.KubeConfig;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +42,7 @@ public class MetricsController {
     }
 
     private List<Map<String, Object>> nodeMetrics() {
-        ApiClient client = connectK8s();
+        ApiClient client = MetricsUtils.connectK8s();
 
         Metrics metrics = new Metrics(client);
         NodeMetricsList nodeMetricsList = null;
@@ -103,7 +94,7 @@ public class MetricsController {
     }
 
     private List<Map<String, Object>> podMetrics() {
-        CoreV1Api api = new CoreV1Api(connectK8s());
+        CoreV1Api api = new CoreV1Api(MetricsUtils.connectK8s());
 
         V1PodList podList = null;
         try {
@@ -121,22 +112,4 @@ public class MetricsController {
             put("restartCount", item.getStatus().getContainerStatuses().get(0).getRestartCount());
         }}).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
-
-    private ApiClient connectK8s() {
-        Resource resource = new ClassPathResource("kubectl.config");
-        Reader reader;
-        ApiClient client = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
-            KubeConfig config = KubeConfig.loadKubeConfig(reader);
-            client = ClientBuilder.kubeconfig(config).build();
-            Configuration.setDefaultApiClient(client);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Configuration.setDefaultApiClient(client);
-        return client;
-    }
-
-
 }

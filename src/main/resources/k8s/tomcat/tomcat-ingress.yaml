@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: tomcat-ingress
+spec:
+  rules:
+    - host: tomcat.ghx.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: tomcat-service
+              servicePort: 80
