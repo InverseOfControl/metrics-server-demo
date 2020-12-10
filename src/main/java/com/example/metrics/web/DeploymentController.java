@@ -10,7 +10,7 @@ import io.kubernetes.client.openapi.models.ExtensionsV1beta1Ingress;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.util.Yaml;
-import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,7 +26,7 @@ public class DeploymentController {
 
     @PostMapping("/deployment")
     public ResponseEntity deployment() throws IOException {
-        String deploymentYamlPath = "classpath:k8s/tomcat/tomcat-deployment.yaml";
+        String deploymentYamlPath = "k8s/tomcat/tomcat-deployment.yaml";
         String serviceYamlPath = "classpath:k8s/tomcat/tomcat-service.yaml";
         String ingressYamlPath = "classpath:k8s/tomcat/tomcat-ingress.yaml";
 
@@ -36,6 +36,9 @@ public class DeploymentController {
         ExtensionsV1beta1Api extensionsV1beta1Api = new ExtensionsV1beta1Api();
 
         // 部署 Deployment
+        Object o = Yaml.load(getYamlFile(deploymentYamlPath));
+        System.out.println(o.getClass());
+
         V1Deployment deploymentBody = (V1Deployment) Yaml.load(getYamlFile(deploymentYamlPath));
 
         System.out.println("apiVersion:" + deploymentBody.getApiVersion());
@@ -98,14 +101,13 @@ public class DeploymentController {
     }
 
     private Reader getYamlFile(String path) {
-        DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
-        Resource resource = resourceLoader.getResource(path);
-
+        Resource resource = new ClassPathResource(path);
+        Reader reader = null;
         try {
-            return new BufferedReader(new InputStreamReader(resource.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("文件不存在");
         }
+        return reader;
     }
 }
