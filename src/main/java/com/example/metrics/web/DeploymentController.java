@@ -41,7 +41,10 @@ public class DeploymentController {
         ExtensionsV1beta1Api extensionsV1beta1Api = new ExtensionsV1beta1Api();
 
         // 部署 Deployment
-        Object o = Yaml.load(getYamlFile(deploymentYamlPath));
+        String content = getYamlFile(deploymentYamlPath);
+        logger.info("content : " + content);
+
+        Object o = Yaml.load(content);
         logger.info("object : " + o.getClass());
 
         V1Deployment deploymentBody = (V1Deployment) Yaml.load(getYamlFile(deploymentYamlPath));
