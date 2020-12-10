@@ -10,6 +10,8 @@ import io.kubernetes.client.openapi.models.ExtensionsV1beta1Ingress;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.util.Yaml;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +26,12 @@ import java.io.Reader;
 @Controller
 public class DeploymentController {
 
+    private static final Logger logger = LoggerFactory.getLogger(DeploymentController.class);
+
     @PostMapping("/deployment")
     public ResponseEntity deployment() throws IOException {
+        logger.info("部署开始");
+
         String deploymentYamlPath = "k8s/tomcat/tomcat-deployment.yaml";
         String serviceYamlPath = "k8s/tomcat/tomcat-service.yaml";
         String ingressYamlPath = "k8s/tomcat/tomcat-ingress.yaml";
@@ -37,7 +43,7 @@ public class DeploymentController {
 
         // 部署 Deployment
         Object o = Yaml.load(getYamlFile(deploymentYamlPath));
-        System.out.println(o.getClass());
+        logger.info("object : " + o.getClass());
 
         V1Deployment deploymentBody = (V1Deployment) Yaml.load(getYamlFile(deploymentYamlPath));
 
