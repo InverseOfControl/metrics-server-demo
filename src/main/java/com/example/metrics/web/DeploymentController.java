@@ -36,6 +36,10 @@ public class DeploymentController {
 
         // 部署 Deployment
         V1Deployment deploymentBody = (V1Deployment) Yaml.load(getYamlFile(deploymentYamlPath));
+
+        System.out.println("apiVersion:" + deploymentBody.getApiVersion());
+        System.out.println("apiVersion:" + deploymentBody.getKind());
+
         try {
             appsV1Api.createNamespacedDeployment("default", deploymentBody, null, null, null);
         } catch (ApiException e) {
@@ -82,7 +86,7 @@ public class DeploymentController {
             e.printStackTrace();
         }
 
-        // 部署 Ingress
+        // 删除 Ingress
         try {
             extensionsV1beta1Api.deleteNamespacedIngress("tomcat-ingress", "default", null, null, null, null, null, null);
         } catch (ApiException e) {
