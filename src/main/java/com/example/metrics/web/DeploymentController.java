@@ -32,7 +32,7 @@ public class DeploymentController {
     public ResponseEntity deployment() throws IOException {
         logger.info("部署开始");
 
-        String deploymentYamlPath = "k8s/tomcat/tomcat-deployment.yaml";
+        String deploymentYamlPath = "tomcat-deployment.yaml";
         String serviceYamlPath = "k8s/tomcat/tomcat-service.yaml";
         String ingressYamlPath = "k8s/tomcat/tomcat-ingress.yaml";
 
