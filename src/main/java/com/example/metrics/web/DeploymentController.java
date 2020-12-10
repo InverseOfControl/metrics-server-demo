@@ -18,10 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 @Controller
 public class DeploymentController {
@@ -106,14 +105,25 @@ public class DeploymentController {
         return ResponseEntity.ok().build();
     }
 
-    private Reader getYamlFile(String path) {
+    private String getYamlFile(String path) {
         Resource resource = new ClassPathResource(path);
-        Reader reader = null;
+        BufferedInputStream in;
         try {
-            reader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+            in = new BufferedInputStream(resource.getInputStream());
+            ByteArrayOutputStream out =
+                    new ByteArrayOutputStream(1024);
+            byte[] buffer = new byte[1024];
+            int n;
+            while ((n = in.read(buffer)) > 0) {
+                out.write(buffer, 0, n);
+            }
+            in.close();
+            out.flush();
+            buffer = out.toByteArray();
+            return new String(buffer);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return reader;
+        return null;
     }
 }
