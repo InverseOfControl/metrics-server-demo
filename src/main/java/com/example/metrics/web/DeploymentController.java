@@ -9,6 +9,7 @@ import io.kubernetes.client.openapi.apis.ExtensionsV1beta1Api;
 import io.kubernetes.client.openapi.models.ExtensionsV1beta1Ingress;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1Service;
+import io.kubernetes.client.util.ModelMapper;
 import io.kubernetes.client.util.Yaml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,9 @@ public class DeploymentController {
         AppsV1Api appsV1Api = new AppsV1Api();
         CoreV1Api coreV1Api = new CoreV1Api();
         ExtensionsV1beta1Api extensionsV1beta1Api = new ExtensionsV1beta1Api();
+
+        Class<?> clazz = ModelMapper.getApiTypeClass("apps/v1", "Deployment");
+        logger.info(clazz.getName());
 
         // 部署 Deployment
         String content = getYamlFile(deploymentYamlPath);
