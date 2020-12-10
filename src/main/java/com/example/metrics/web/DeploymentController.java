@@ -10,14 +10,15 @@ import io.kubernetes.client.openapi.models.ExtensionsV1beta1Ingress;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.util.Yaml;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 @Controller
 public class DeploymentController {
@@ -91,12 +92,12 @@ public class DeploymentController {
         return ResponseEntity.ok().build();
     }
 
-    private File getYamlFile(String path) {
+    private Reader getYamlFile(String path) {
         DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
-        ClassPathResource classPathResource =
-                (ClassPathResource) resourceLoader.getResource(path);
+        Resource resource = resourceLoader.getResource(path);
+
         try {
-            return classPathResource.getFile();
+            return new InputStreamReader(resource.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("文件不存在");
