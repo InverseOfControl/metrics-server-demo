@@ -27,8 +27,8 @@ public class DeploymentController {
     @PostMapping("/deployment")
     public ResponseEntity deployment() throws IOException {
         String deploymentYamlPath = "k8s/tomcat/tomcat-deployment.yaml";
-        String serviceYamlPath = "classpath:k8s/tomcat/tomcat-service.yaml";
-        String ingressYamlPath = "classpath:k8s/tomcat/tomcat-ingress.yaml";
+        String serviceYamlPath = "k8s/tomcat/tomcat-service.yaml";
+        String ingressYamlPath = "k8s/tomcat/tomcat-ingress.yaml";
 
         ApiClient client = MetricsUtils.connectK8s();
         AppsV1Api appsV1Api = new AppsV1Api();
