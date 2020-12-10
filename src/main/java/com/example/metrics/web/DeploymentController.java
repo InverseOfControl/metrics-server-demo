@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -30,9 +31,9 @@ public class DeploymentController {
         String ingressYamlPath = "classpath:k8s/tomcat/tomcat-ingress.yaml";
 
         ApiClient client = MetricsUtils.connectK8s();
-        AppsV1Api appsV1Api = new AppsV1Api(client);
-        CoreV1Api coreV1Api = new CoreV1Api(client);
-        ExtensionsV1beta1Api extensionsV1beta1Api = new ExtensionsV1beta1Api(client);
+        AppsV1Api appsV1Api = new AppsV1Api();
+        CoreV1Api coreV1Api = new CoreV1Api();
+        ExtensionsV1beta1Api extensionsV1beta1Api = new ExtensionsV1beta1Api();
 
         // 部署 Deployment
         V1Deployment deploymentBody = (V1Deployment) Yaml.load(getYamlFile(deploymentYamlPath));
@@ -101,7 +102,7 @@ public class DeploymentController {
         Resource resource = resourceLoader.getResource(path);
 
         try {
-            return new InputStreamReader(resource.getInputStream());
+            return new BufferedReader(new InputStreamReader(resource.getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("文件不存在");
