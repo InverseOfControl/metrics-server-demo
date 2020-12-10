@@ -123,7 +123,7 @@ public class DeploymentController {
             in.close();
             out.flush();
             buffer = out.toByteArray();
-            return new String(buffer);
+            return new String(buffer, "utf-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
