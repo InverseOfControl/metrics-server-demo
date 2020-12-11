@@ -19,8 +19,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 @Controller
 public class DeploymentController {
@@ -41,10 +42,7 @@ public class DeploymentController {
         ExtensionsV1beta1Api extensionsV1beta1Api = new ExtensionsV1beta1Api();
 
         // 部署 Deployment
-        String content = getYamlFile(deploymentYamlPath);
-        logger.info("content : " + content);
-
-        V1Deployment deploymentBody = Yaml.loadAs(content, V1Deployment.class);
+        V1Deployment deploymentBody = Yaml.loadAs(getYamlFile(deploymentYamlPath), V1Deployment.class);
 
         System.out.println("apiVersion:" + deploymentBody.getApiVersion());
         System.out.println("apiVersion:" + deploymentBody.getKind());
@@ -56,7 +54,7 @@ public class DeploymentController {
         }
 
         // 部署 Service
-        V1Service serviceBody = (V1Service) Yaml.load(getYamlFile(serviceYamlPath));
+        V1Service serviceBody = Yaml.loadAs(getYamlFile(serviceYamlPath), V1Service.class);
         try {
             coreV1Api.createNamespacedService("default", serviceBody, null, null, null);
         } catch (ApiException e) {
@@ -64,7 +62,7 @@ public class DeploymentController {
         }
 
         // 部署 Ingress
-        ExtensionsV1beta1Ingress ingressBody = (ExtensionsV1beta1Ingress) Yaml.load(getYamlFile(ingressYamlPath));
+        ExtensionsV1beta1Ingress ingressBody = Yaml.loadAs(getYamlFile(ingressYamlPath), ExtensionsV1beta1Ingress.class);
         try {
             extensionsV1beta1Api.createNamespacedIngress("default", ingressBody, null, null, null);
         } catch (ApiException e) {
@@ -105,22 +103,11 @@ public class DeploymentController {
         return ResponseEntity.ok().build();
     }
 
-    private String getYamlFile(String path) {
+    private Reader getYamlFile(String path) {
         Resource resource = new ClassPathResource(path);
         BufferedInputStream in;
         try {
-            in = new BufferedInputStream(resource.getInputStream());
-            ByteArrayOutputStream out =
-                    new ByteArrayOutputStream(1024);
-            byte[] buffer = new byte[1024];
-            int n;
-            while ((n = in.read(buffer)) > 0) {
-                out.write(buffer, 0, n);
-            }
-            in.close();
-            out.flush();
-            buffer = out.toByteArray();
-            return new String(buffer, "utf-8");
+            return new InputStreamReader(new BufferedInputStream(resource.getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
         }
